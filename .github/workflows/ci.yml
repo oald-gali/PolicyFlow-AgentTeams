@@ -1,0 +1,135 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      validate_agentteams_crd:
+        description: Validate the pinned AgentTeams v1.2.2 CRDs over the network
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Python 3.11 quality gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install project and development dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Run pytest
+        run: python -m pytest -q
+
+      - name: Run Golden Suite
+        run: |
+          python - <<'PY'
+          import json
+          import tempfile
+          from pathlib import Path
+
+          from policyflow.evaluation import run_golden_suite
+          from policyflow.runtime import PolicyFlowRuntime
+
+          with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as temporary_directory:
+              runtime = PolicyFlowRuntime(
+                  Path.cwd(),
+                  db_path=Path(temporary_directory) / "golden.db",
+              )
+              result = run_golden_suite(runtime)
+
+          summary = {
+              "suite": result["suite"],
+              "passed": result["passed"],
+              "total": result["total"],
+          }
+          print(json.dumps(summary, ensure_ascii=False))
+          if result["passed"] != result["total"]:
+              failed = [case["case_id"] for case in result["cases"] if not case["passed"]]
+              raise SystemExit(f"Golden Suite failed: {failed}")
+          PY
+
+      - name: Run active attack evaluation
+        run: |
+          python - <<'PY'
+          import json
+          import tempfile
+          from pathlib import Path
+
+          from policyflow.evaluation import run_golden_suite
+          from policyflow.runtime import PolicyFlowRuntime
+
+          with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as temporary_directory:
+              runtime = PolicyFlowRuntime(
+                  Path.cwd(),
+                  db_path=Path(temporary_directory) / "attacks.db",
+              )
+              result = run_golden_suite(runtime)
+
+          attack_cases = [case for case in result["cases"] if case["category"] == "attack"]
+          failed = [case["case_id"] for case in attack_cases if not case["passed"]]
+          print(
+              json.dumps(
+                  {
+                      "blocked": len(attack_cases) - len(failed),
+                      "total": len(attack_cases),
+                      "failed": failed,
+                  },
+                  ensure_ascii=False,
+              )
+          )
+          if failed or result["attack_blocked"] != result["attack_total"]:
+              raise SystemExit(f"Active attack evaluation failed: {failed}")
+          PY
+
+      - name: Evaluate Skill contracts
+        run: python deploy/agentteams/skill_eval.py
+
+      - name: Compile Python sources
+        run: python -m compileall -q src tests deploy
+
+  agentteams-crd:
+    name: AgentTeams v1.2.2 network CRD validation
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.validate_agentteams_crd }}
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install project and development dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Validate pinned AgentTeams CRDs
+        run: python deploy/agentteams/validate_manifest.py --json
