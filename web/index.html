@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="PolicyFlow：面向 GOAI Agent Infra 的证据驱动、可审批、可回滚多 Agent 流程基础设施。"
+    />
+    <title>PolicyFlow · GOAI Agent Infra MVP</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+
+    <nav class="nav-rail" aria-label="页面导航">
+      <a class="rail-mark" href="#demo" aria-label="PolicyFlow 首页">PF</a>
+      <div class="rail-links">
+        <a href="#demo" aria-label="运行演示" data-rail-link="demo"><span>01</span></a>
+        <a href="#identities" aria-label="Agent 身份" data-rail-link="identities"><span>02</span></a>
+        <a href="#engineering" aria-label="工程证据" data-rail-link="engineering"><span>03</span></a>
+      </div>
+      <span class="rail-version" aria-label="版本 0.1.0">v0.1</span>
+    </nav>
+
+    <header class="topbar">
+      <div class="brand-lockup">
+        <span class="brand-name">PolicyFlow</span>
+        <span class="brand-note">GOAI · Agent Infra</span>
+      </div>
+      <div class="topbar-actions">
+        <span class="runtime-state"><span class="status-dot" aria-hidden="true"></span>Local Demo</span>
+        <span class="agentteams-lock">AgentTeams v1.2.2 · CRD verified</span>
+        <button class="button button--quiet" id="runEvalButton" type="button">运行评测</button>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="intro" id="demo" aria-labelledby="page-title">
+        <div class="intro-copy">
+          <h1 id="page-title">先读制度，再执行。最后证明没有做错。</h1>
+          <p>
+            PolicyFlow 把企业请求编译为一条带制度证据、审批检查点、幂等工具和独立验收的多 Agent 流程。
+            现场主 Demo 是一笔住宿超标报销。
+          </p>
+          <a class="button button--primary intro-cta" href="#workspace">进入现场工作台</a>
+        </div>
+        <dl class="intro-proof" aria-label="方案关键事实">
+          <div><dt>Agent</dt><dd id="introAgentCount">4</dd></div>
+          <div><dt>Context</dt><dd>Evidence + State + Trace</dd></div>
+          <div><dt>Risk gate</dt><dd>Approve / Reject / Rollback</dd></div>
+        </dl>
+      </section>
+
+      <section class="workspace" id="workspace" aria-label="PolicyFlow 运行工作台">
+        <aside class="scenario-pane" aria-labelledby="scenario-title">
+          <div class="pane-heading">
+            <h2 id="scenario-title">选择现场案例</h2>
+            <span class="mono-tag">INPUT</span>
+          </div>
+          <div class="scenario-list" id="scenarioList" aria-live="polite">
+            <div class="skeleton skeleton--line"></div>
+            <div class="skeleton skeleton--line"></div>
+            <div class="skeleton skeleton--line"></div>
+          </div>
+          <div class="request-sheet" id="requestSheet">
+            <p class="request-placeholder">正在读取案例…</p>
+          </div>
+          <button class="button button--primary run-button" id="startRunButton" type="button" disabled>
+            运行主 Demo
+          </button>
+          <p class="field-note">默认离线可运行；不会连接真实财务系统。</p>
+        </aside>
+
+        <section class="run-pane" aria-labelledby="run-title">
+          <div class="run-heading">
+            <div>
+              <h2 id="run-title">执行链</h2>
+              <p id="runMeta">尚未创建 Run</p>
+            </div>
+            <div class="run-heading-actions">
+              <button class="button button--text" id="copyRunButton" type="button" hidden>复制 Run ID</button>
+              <a class="button button--quiet" id="exportAuditLink" href="#" hidden>导出审计包</a>
+            </div>
+          </div>
+
+          <article class="decision-focal" id="decisionFocal" data-state="idle" aria-live="polite">
+            <div>
+              <span class="decision-code">READY</span>
+              <h3>所有副作用都在证据之后</h3>
+              <p>选择左侧案例，PolicyFlow 会运行到真实的审批检查点。</p>
+            </div>
+            <span class="decision-seal" aria-hidden="true">PF</span>
+          </article>
+
+          <div class="stat-strip" id="metricStrip" aria-label="运行指标">
+            <div><b>—</b><span>Trace 事件</span></div>
+            <div><b>—</b><span>制度证据</span></div>
+            <div><b>—</b><span>策略门</span></div>
+            <div><b>—</b><span>工具回执</span></div>
+          </div>
+
+          <div class="pane-heading pane-heading--spaced">
+            <h2>四 Agent 协作</h2>
+            <span class="mono-tag">AGENTTEAMS MAP</span>
+          </div>
+          <div class="agent-lanes" id="agentLanes">
+            <p class="empty-copy">运行后显示每个 Agent 实际完成的工作。</p>
+          </div>
+
+          <div class="pane-heading pane-heading--spaced">
+            <h2>计划与状态</h2>
+            <span class="mono-tag">CHECKPOINTED</span>
+          </div>
+          <ol class="plan-steps" id="planSteps">
+            <li class="plan-empty">尚无执行计划。</li>
+          </ol>
+        </section>
+
+        <aside class="evidence-pane" aria-labelledby="evidence-title">
+          <div class="pane-heading">
+            <h2 id="evidence-title">制度证据</h2>
+            <span class="mono-tag">POLICY EVIDENCE</span>
+          </div>
+          <div class="policy-lock">
+            <span>PF-TRAVEL-2026</span>
+            <b>@2026.08</b>
+          </div>
+          <div class="evidence-list" id="evidenceList">
+            <p class="empty-copy">Run 创建后，这里显示精确条款与来源指纹。</p>
+          </div>
+
+          <div class="verdict-panel" id="verdictPanel">
+            <div class="pane-heading">
+              <h2>独立裁决</h2>
+              <span class="mono-tag">VERIFIER</span>
+            </div>
+            <p class="empty-copy">Executor 不能给自己验收。</p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="trace-band" aria-labelledby="trace-title">
+        <div class="trace-heading">
+          <div>
+            <h2 id="trace-title">Trace 是证据，不是思维链。</h2>
+            <p>只展示结构化输入、制度依据、状态变化、工具回执和裁决。</p>
+          </div>
+          <span class="trace-protocol">policyflow.trace/v1</span>
+        </div>
+        <div class="trace-grid">
+          <ol class="trace-list" id="traceList">
+            <li class="trace-empty">运行案例后可逐步检查。</li>
+          </ol>
+          <div class="trace-inspector" id="traceInspector" aria-live="polite">
+            <span class="mono-tag mono-tag--dark">SELECT A SPAN</span>
+            <p>选择左侧 Trace 事件查看父子关系、证据 ID、arguments hash 和幂等键。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="identity-section" id="identities" aria-labelledby="identity-title">
+        <div class="section-heading">
+          <h2 id="identity-title">四个身份，四条不可越过的边界。</h2>
+          <p>AgentTeams 的 Manager–Workers 关系映射到可检查的输入、输出、工具和禁区。</p>
+        </div>
+        <div class="identity-list" id="identityList">
+          <p class="empty-copy">正在载入 Agent Identity 清单…</p>
+        </div>
+      </section>
+
+      <section class="engineering-section" id="engineering" aria-labelledby="engineering-title">
+        <div class="section-heading section-heading--compact">
+          <h2 id="engineering-title">评委可以追问的工程证据</h2>
+          <p>不是“用了多少组件”，而是每个组件为什么必要、如何替换、失败后怎么办。</p>
+        </div>
+        <div class="engineering-grid">
+          <div class="spec-block">
+            <div class="pane-heading">
+              <h3>Skill 契约</h3>
+              <span class="mono-tag">6 REUSABLE</span>
+            </div>
+            <div class="spec-rows" id="skillRows"></div>
+          </div>
+          <div class="spec-block">
+            <div class="pane-heading">
+              <h3>官方要求映射</h3>
+              <span class="mono-tag">GOAI FIT</span>
+            </div>
+            <div class="requirement-list" id="requirementList">
+              <p class="empty-copy">正在核对运行信息…</p>
+            </div>
+          </div>
+        </div>
+        <div class="eval-report" id="evalReport" hidden aria-live="polite"></div>
+      </section>
+    </main>
+
+    <aside class="decision-bar" id="decisionBar" hidden aria-live="polite">
+      <div class="decision-bar-copy">
+        <span class="decision-bar-label">HUMAN CHECKPOINT</span>
+        <strong id="approvalRole">等待审批</strong>
+        <span id="approvalSummary">正式提交工具尚未调用。</span>
+      </div>
+      <div class="decision-bar-actions">
+        <button class="button button--danger" id="rejectButton" type="button">拒绝并回滚</button>
+        <button class="button button--primary" id="approveButton" type="button">批准此角色</button>
+      </div>
+    </aside>
+
+    <footer class="foot-line">
+      <p><strong>PolicyFlow</strong> · GOAI Agent Infra MVP · local-first · MCP Streamable HTTP · AgentTeams v1.2.2</p>
+      <a href="/docs" aria-label="API 文档">API docs</a>
+    </footer>
+
+    <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="true"></div>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
