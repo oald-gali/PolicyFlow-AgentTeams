@@ -1,0 +1,135 @@
+{
+  "schema_version": "policyflow-agentteams-live-evidence/v1",
+  "generated_at": "2026-08-16T19:12:00+08:00",
+  "environment": {
+    "kind": "local-windows-docker-test-cluster",
+    "agentteams_tag": "v1.2.2",
+    "agentteams_commit": "849182af8e017168a5a200a87b1062142caf462d",
+    "api_version": "agentteams.io/v1beta1",
+    "model": "deepseek-chat",
+    "e2ee": false
+  },
+  "deployment": {
+    "apply_command": "agt apply -f deploy/agentteams/policyflow-team.yaml",
+    "apply_result": "created",
+    "resources": {
+      "workers": {
+        "policyflow-planner": "Running",
+        "policyflow-policy": "Running",
+        "policyflow-executor": "Running",
+        "policyflow-verifier": "Running"
+      },
+      "team": {
+        "name": "policyflow-team",
+        "phase": "Active",
+        "ready_workers": "3/3"
+      },
+      "humans": {
+        "department-manager": "Active",
+        "finance-reviewer": "Active"
+      }
+    },
+    "images": {
+      "controller": "sha256:c7e467bfa5a2a733ea021c19f223180eef85e3e534873feceb8a7a132253125f",
+      "manager": "sha256:ebf80c4b8296b11ac1bc295329740542fb4c9c0365273019ad70062138477518",
+      "worker": "sha256:301f9e311654eca203246fa666d63a126244ea8793f700603d2a6d37b7ffea75"
+    }
+  },
+  "correlation": {
+    "run_id": "run_854b23690660",
+    "trace_id": "trace_7a103a48ccf909fc",
+    "checkpoint_id": "checkpoint_dbd7b725b8a7434b",
+    "plan_id": "plan_808244384e1a84d2",
+    "local_status": "waiting_approval",
+    "approval_count": 0,
+    "local_receipt_tools": [
+      "expense.create_draft"
+    ],
+    "local_trace_event_count": 4,
+    "local_trace_chain_valid": true,
+    "local_trace_chain_head": "eb963b6ce9c02d637d5251c961e3e450c7f02d869539c62fa9ab59b01b141480"
+  },
+  "matrix": {
+    "team_room_id": "!f1e9yOtsP6M1EGJQYD:matrix-local.agentteams.io:18080",
+    "leader_dm_room_id": "!aTSDDy5z6pCVHUbltK:matrix-local.agentteams.io:18080",
+    "observed_agent_to_agent_handoffs": 6,
+    "canonical_events": [
+      {
+        "stage": "planner_to_policy",
+        "event_id": "$YQSJY24vySalR91jMxgc-zgDV90aLXJmGF_ZfBr5mRU",
+        "sender": "@policyflow-planner:matrix-local.agentteams.io:18080",
+        "mentioned": "@policyflow-policy:matrix-local.agentteams.io:18080",
+        "timestamp": "2026-08-16T19:04:10.676+08:00",
+        "body_sha256": "a4b2b47609f29408e58a681a3c368255b09933f79db732f61cabc195dfb45f43",
+        "result": "policy evidence requested"
+      },
+      {
+        "stage": "policy_to_planner",
+        "event_id": "$JDqN21DnKbCiLuHrJnBzSHgtrqw1LkOxFXa_6YQImnA",
+        "sender": "@policyflow-policy:matrix-local.agentteams.io:18080",
+        "mentioned": "@policyflow-planner:matrix-local.agentteams.io:18080",
+        "timestamp": "2026-08-16T19:04:51.045+08:00",
+        "body_sha256": "e25165643a1003b49bb2d8c0836304694955c7dc2ae4aa3a92294760dd2fa6a5",
+        "result": "BLOCKED: controlled policy package was absent; no policy facts invented"
+      },
+      {
+        "stage": "planner_to_executor",
+        "event_id": "$swrsfr490dUr8VGV4UIz4pnrHUzQQTGa9WtsHICJFuQ",
+        "sender": "@policyflow-planner:matrix-local.agentteams.io:18080",
+        "mentioned": "@policyflow-executor:matrix-local.agentteams.io:18080",
+        "timestamp": "2026-08-16T19:09:39.258+08:00",
+        "body_sha256": "df029e7ee97aefadd706fdef9bebadd5b104c6a29d33e87d869fe19d1e232119",
+        "result": "GATE request"
+      },
+      {
+        "stage": "executor_to_planner",
+        "event_id": "$NMdgL7-75f-EdzPqHfYotoFlCJcoiaA4NzFDE7O_AWw",
+        "sender": "@policyflow-executor:matrix-local.agentteams.io:18080",
+        "mentioned": "@policyflow-planner:matrix-local.agentteams.io:18080",
+        "timestamp": "2026-08-16T19:09:49.715+08:00",
+        "body_sha256": "a2929bc1a708887fcd44d391416538947929e6fb3770f05701da8204fe285bc1",
+        "result": "BLOCKED; no enterprise write; Department Manager and Finance Reviewer both required"
+      },
+      {
+        "stage": "planner_to_verifier",
+        "event_id": "$ZUa0TF6iUE3pkaAcjx79raOMl0hYerGnZPhZ1GoBvlY",
+        "sender": "@policyflow-planner:matrix-local.agentteams.io:18080",
+        "mentioned": "@policyflow-verifier:matrix-local.agentteams.io:18080",
+        "timestamp": "2026-08-16T19:09:39.284+08:00",
+        "body_sha256": "13f84581e5c4eb4bd8fc95916bc8e1e7164357f820d80cbc522b26458f7628f2",
+        "result": "independent VERIFY request"
+      },
+      {
+        "stage": "verifier_to_planner",
+        "event_id": "$ysm408wbkpk99VzZwMQg990CtBvuzkH9BOgiaxon-1w",
+        "sender": "@policyflow-verifier:matrix-local.agentteams.io:18080",
+        "mentioned": "@policyflow-planner:matrix-local.agentteams.io:18080",
+        "timestamp": "2026-08-16T19:10:04.899+08:00",
+        "body_sha256": "1e7423fdd5b15df2f66cf77231cf715c02b844b8e71d6817a02a0f2074197c4b",
+        "result": "REPLAN; fail-closed; reimbursement must not be released"
+      }
+    ],
+    "final_manager_receipt": {
+      "event_id": "$JT-Ku_unViQkWC_SPpSvbpLaRCCg5Qn_F4ndEHcovvw",
+      "sender": "@policyflow-planner:matrix-local.agentteams.io:18080",
+      "mentioned": "@admin:matrix-local.agentteams.io:18080",
+      "timestamp": "2026-08-16T19:10:08.727+08:00",
+      "body_sha256": "c0c7d0200b919fdceb92eadf778873bf31301b25c7885c6d45a5671c8065170b",
+      "result": "final fail-closed summary"
+    }
+  },
+  "security_observations": {
+    "enterprise_write_invoked": false,
+    "approval_bypassed": false,
+    "policy_facts_invented": false,
+    "final_decision": "REPLAN/BLOCKED",
+    "agent_to_agent_trigger_policy": "explicit mentions only",
+    "secrets_in_receipt": false
+  },
+  "scope_limits": [
+    "The AgentTeams live run is a correlated dry-run; run_id and trace_id were injected into Matrix messages, not synchronized through a completed PolicyFlow MCP bridge.",
+    "The controlled local PolicyFlow policy pack was intentionally not copied to AgentTeams shared storage, so Policy Memory correctly failed closed.",
+    "The six PolicyFlow Skill packages remain static package metadata; Manager-to-Worker package distribution and hot loading were not claimed.",
+    "No production IAM, SSO, finance system, OTLP collector, or encrypted Matrix deployment was used."
+  ]
+}
