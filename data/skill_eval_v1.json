@@ -1,0 +1,38 @@
+{
+  "format": "policyflow-skill-eval/v1",
+  "method": "deterministic contract-to-golden association",
+  "limitations": "This is not an LLM with-skill/without-skill benchmark and does not claim Alibaba skill-up execution.",
+  "skills": {
+    "request-normalize": [
+      "query_write_boundary",
+      "missing_invoice_block",
+      "prompt_injection_isolated"
+    ],
+    "policy-retrieve": [
+      "hard_limit_block",
+      "two_role_approval",
+      "ecp_contract_reused"
+    ],
+    "workflow-plan": [
+      "ecp_contract_reused",
+      "temporary_access_closed_loop",
+      "temporary_access_reject_revoke"
+    ],
+    "guarded-execute": [
+      "idempotent_submit",
+      "approved_argument_swap",
+      "idempotency_argument_conflict",
+      "least_privilege_write"
+    ],
+    "outcome-verify": [
+      "compliant_submission",
+      "temporary_access_closed_loop",
+      "signed_reject_rollback"
+    ],
+    "evidence-export": [
+      "trace_hash_chain",
+      "audit_bundle_integrity",
+      "audit_tamper_detected"
+    ]
+  }
+}

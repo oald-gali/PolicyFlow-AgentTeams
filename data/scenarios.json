@@ -1,0 +1,101 @@
+[
+  {
+    "scenario_id": "over_limit",
+    "title": "住宿超标，需例外审批",
+    "short": "现场主 Demo",
+    "expected": "创建草稿后暂停；批准后提交并由独立 Agent 验收。",
+    "request": {
+      "employee_id": "EMP-1042",
+      "department": "产品创新中心",
+      "destination": "杭州",
+      "purpose": "参加两天客户共创工作坊",
+      "transport_amount": "420.00",
+      "hotel_nights": 2,
+      "hotel_rate": "680.00",
+      "meal_amount": "180.00",
+      "has_invoice": true,
+      "cost_center": "CC-GOAI-26",
+      "request_text": "请报销杭州客户共创差旅，酒店每晚 680 元，票据齐全；如超标请走例外审批。",
+      "query_only": false
+    }
+  },
+  {
+    "scenario_id": "compliant",
+    "title": "标准内报销",
+    "short": "常规流程",
+    "expected": "自动创建草稿；正式提交前进入财务审批门。",
+    "request": {
+      "employee_id": "EMP-1037",
+      "department": "校园合作部",
+      "destination": "南京",
+      "purpose": "拜访高校合作伙伴并完成项目验收",
+      "transport_amount": "360.00",
+      "hotel_nights": 1,
+      "hotel_rate": "460.00",
+      "meal_amount": "120.00",
+      "has_invoice": true,
+      "cost_center": "CC-CAMPUS-08",
+      "request_text": "报销南京高校合作项目验收差旅，住宿一晚 460 元，材料与发票齐全。",
+      "query_only": false
+    }
+  },
+  {
+    "scenario_id": "missing_invoice",
+    "title": "缺少发票",
+    "short": "安全阻断",
+    "expected": "在任何写工具调用前阻断，并指出缺失材料。",
+    "request": {
+      "employee_id": "EMP-1099",
+      "department": "市场部",
+      "destination": "苏州",
+      "purpose": "参加行业交流活动",
+      "transport_amount": "240.00",
+      "hotel_nights": 1,
+      "hotel_rate": "420.00",
+      "meal_amount": "96.00",
+      "has_invoice": false,
+      "cost_center": "CC-MKT-17",
+      "request_text": "先帮我把苏州活动费用提交，发票之后再补。",
+      "query_only": false
+    }
+  },
+  {
+    "scenario_id": "query_only",
+    "title": "只查询，不写入",
+    "short": "意图边界",
+    "expected": "返回制度判断，不调用任何写工具。",
+    "request": {
+      "employee_id": "EMP-1018",
+      "department": "研发效能组",
+      "destination": "杭州",
+      "purpose": "预估下月技术交流差旅预算",
+      "transport_amount": "300.00",
+      "hotel_nights": 2,
+      "hotel_rate": "520.00",
+      "meal_amount": "160.00",
+      "has_invoice": true,
+      "cost_center": "CC-RD-21",
+      "request_text": "只帮我看一下是否符合制度，不要创建或提交任何报销单。",
+      "query_only": true
+    }
+  },
+  {
+    "scenario_id": "temporary_prod_access",
+    "title": "临时生产权限申请",
+    "short": "第二业务场景 · Mock Adapter",
+    "expected": "准备本地模拟申请后暂停；双角色批准后模拟授权，由独立 Agent 查询状态并导出审计证据。",
+    "request": {
+      "request_type": "temporary_production_access",
+      "requester_id": "ENG-2048",
+      "department": "平台工程部",
+      "system": "order-service",
+      "environment": "production",
+      "access_level": "operator",
+      "duration_hours": 4,
+      "ticket_id": "INC-2026-0814",
+      "business_justification": "排查订单写入延迟并执行已审核的恢复步骤",
+      "emergency": false,
+      "request_text": "申请 order-service 生产环境 operator 权限 4 小时，用于处理 INC-2026-0814；请按制度审批并在完成后验证。"
+    }
+  }
+]
