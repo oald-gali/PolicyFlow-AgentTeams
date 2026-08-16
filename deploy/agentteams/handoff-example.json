@@ -1,0 +1,87 @@
+{
+  "contract_version": "policyflow-agentteams-handoff/v1",
+  "transport_status": "design_not_executed",
+  "team_name": "policyflow-team",
+  "run_id": "run_example_not_executed",
+  "trace_id": "trace_example_not_executed",
+  "messages": [
+    {
+      "sequence": 1,
+      "from_agent": "agentteams.manager",
+      "to_agent": "policyflow-planner",
+      "message_type": "goal",
+      "task": "拆解住宿超标报销目标并定义验收条件",
+      "context_refs": ["request:over_limit", "team:policyflow-team"],
+      "expected_output": "task graph",
+      "decision_boundary": "Planner 只能规划，不能批准或执行企业写操作",
+      "state_before": "CREATED",
+      "state_after": "REQUEST_NORMALIZED",
+      "trace_link": {"trace_id": "trace_example_not_executed", "span_id": "span_goal_01"}
+    },
+    {
+      "sequence": 2,
+      "from_agent": "policyflow-planner",
+      "to_agent": "policyflow-policy",
+      "message_type": "policy_query",
+      "task": "检索住宿标准、硬上限、审批和材料条款",
+      "context_refs": ["request:over_limit", "policy-pack:travel-expense@2026.08"],
+      "expected_output": "EvidenceBundle",
+      "decision_boundary": "Policy 只返回可引用证据，不审批、不执行",
+      "state_before": "REQUEST_NORMALIZED",
+      "state_after": "POLICY_RETRIEVING",
+      "trace_link": {"trace_id": "trace_example_not_executed", "span_id": "span_policy_query_02"}
+    },
+    {
+      "sequence": 3,
+      "from_agent": "policyflow-policy",
+      "to_agent": "policyflow-planner",
+      "message_type": "evidence_bundle",
+      "task": "回传带版本、条款和 source hash 的冻结证据",
+      "context_refs": ["evidence:bundle", "policy-version:2026.08", "source-hash:sha256"],
+      "expected_output": "Evidence-Carrying Plan",
+      "decision_boundary": "证据不足时不得编造，Planner 承担 gate 决策",
+      "state_before": "POLICY_RETRIEVING",
+      "state_after": "POLICY_RETRIEVED",
+      "trace_link": {"trace_id": "trace_example_not_executed", "span_id": "span_evidence_03"}
+    },
+    {
+      "sequence": 4,
+      "from_agent": "policyflow-planner",
+      "to_agent": "policyflow-executor",
+      "message_type": "execution_task",
+      "task": "按冻结 ECP 准备草稿并在真实提交前进入审批门",
+      "context_refs": ["ecp:policyflow-ecp/v1", "checkpoint:pending", "approval:required"],
+      "expected_output": "ToolReceipt or waiting checkpoint",
+      "decision_boundary": "只有 Executor 可请求已登记写工具，Gateway 做最终授权",
+      "state_before": "PLANNED",
+      "state_after": "WAITING_APPROVAL",
+      "trace_link": {"trace_id": "trace_example_not_executed", "span_id": "span_execute_04"}
+    },
+    {
+      "sequence": 5,
+      "from_agent": "policyflow-executor",
+      "to_agent": "policyflow-verifier",
+      "message_type": "execution_result",
+      "task": "交付实际工具回执、冻结快照与状态证明索引",
+      "context_refs": ["receipt:expense.submit", "snapshot:frozen", "trace:hash-chain"],
+      "expected_output": "independent verification verdict",
+      "decision_boundary": "Executor 无权声明自己执行正确，也不能修改验证回执",
+      "state_before": "EXECUTED",
+      "state_after": "VERIFYING",
+      "trace_link": {"trace_id": "trace_example_not_executed", "span_id": "span_result_05"}
+    },
+    {
+      "sequence": 6,
+      "from_agent": "policyflow-verifier",
+      "to_agent": "policyflow-planner",
+      "message_type": "verification_result",
+      "task": "独立对照请求、证据、审批、实际回执和 proof obligations",
+      "context_refs": ["verification:report", "verdict:accept-replan-rollback", "audit:manifest"],
+      "expected_output": "ACCEPT, REPLAN or ROLLBACK",
+      "decision_boundary": "Verifier 只读，无企业写权限；裁决缺证据时不得 ACCEPT",
+      "state_before": "VERIFYING",
+      "state_after": "VERIFIED",
+      "trace_link": {"trace_id": "trace_example_not_executed", "span_id": "span_verify_06"}
+    }
+  ]
+}
