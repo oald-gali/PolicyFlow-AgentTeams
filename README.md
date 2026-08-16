@@ -102,7 +102,7 @@ AgentTeams live:   4 Workers Running; Team Active 3/3; 2 Humans Active; 6 handof
 
 测试覆盖签名伪造、跨 Run 重放、错误角色、空角色/伪造审批对象、实际参数替换、非 Executor 写调用、提示注入、硬上限、并发幂等、重启恢复、Trace/ZIP 篡改和脱敏；还覆盖 CaseLesson 决策替换、跨 Run 复用、单次使用、数据集版本过期、拒绝隔离与重启持久化。所有测试使用临时 SQLite，不污染演示数据。
 
-OpenTelemetry 输出是基于现有 Trace 的脱敏 GenAI 语义映射，不是 OTLP envelope，也未声称已接入 Collector 或 AgentScope Studio。方法与边界见 [OTel GenAI 映射](docs/OTEL_GENAI_MAPPING.md)。2026-08-15 的最终隔离复跑命令、结果与一条完整 Run 摘录见 [初赛最终运行回执](docs/FINAL_EVIDENCE_RECEIPT.md)。
+OpenTelemetry 输出是基于现有 Trace 的脱敏 GenAI 语义映射，不是 OTLP envelope，也未声称已接入 Collector 或 AgentScope Studio。方法与边界见 [OTel GenAI 映射](docs/OTEL_GENAI_MAPPING.md)。2026-08-16 的最终隔离复跑命令、结果与一条完整 Run 摘录见 [初赛最终运行回执](docs/FINAL_EVIDENCE_RECEIPT.md)。
 
 ## 项目结构
 
